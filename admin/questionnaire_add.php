@@ -1,0 +1,99 @@
+<?php
+  require_once("libs/Db.php");
+  $objDb = new Db();
+  $db = $objDb->database;
+?>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="build/images/logo-header.png" type="image/png" sizes="16x16">
+
+    <title>เพิ่มข้อคำถามแบบสอบถาม | YRU & UniSZA</title>
+
+    <link href="build/css/bootstrap.min.css" rel="stylesheet">
+    <link href="build/css/font-awesome.min.css" rel="stylesheet">
+    <link href="build/css/custom.min.css" rel="stylesheet">
+
+  </head>
+
+  <body class="nav-md">
+
+    <?php
+    require_once 'header.php';
+    ?>
+
+        <!-- page content -->
+        <div class="right_col">
+          <br><br><br>
+          <div class="panel panel-default">
+            <div class="panel-body">
+                <h3>เพิ่มข้อคำถามในแบบสอบถาม</h3>
+                <hr>
+                <?php
+                  if($_GET["Action"] == "Save"){
+
+                        $query = $db->prepare("SELECT * FROM tb_question WHERE question = '".$_POST["field_questionnaire"]."'");
+                        $query->execute();
+                        if($query->rowCount() > 0){
+
+                  		             echo "<script>";
+                  								 echo "alert('ข้อคำถามนี้มีอยู่ในฐานข้อมูลแล้ว');";
+                  								 echo "window.location='questionnaire_add.php';";
+                  		          	 echo "</script>";
+                  				}
+                  						/*End Check for dupplicate*/
+                  						else{
+
+                  			//Insert to Database
+                        $query = $db->prepare("INSERT INTO tb_question (question) VALUES ('".$_POST["field_questionnaire"]."')");
+                        $query->execute();
+                        if($query->rowCount() > 0){
+                  						echo "<script type='text/javascript'> </script>";
+                  						echo "<script>alert('ระบบทำการบันทึกข้อมูลเรียบร้อยแล้ว'); </script>";
+                  						echo "<script>window.location = 'questionnaire_add.php'; </script>";
+                  				  }
+                  				  else{
+                  						echo "<script type='text/javascript'> </script>";
+                  						echo "<script>alert('ระบบมีข้อผิดพลาดบางอย่าง'); </script>";
+                  						echo "<script>history.back();</script>";
+                  				  }
+                        }
+                  }
+                ?>
+                <br>
+                <div class="container">
+                    <div class="row">
+                      <div class="container">
+                        <form class="form-horizontal" action="questionnaire_add.php?Action=Save" method="post">
+                          <div class="form-group">
+                            <label for="inputEmail3" class="col-sm-2 control-label">เพิ่มข้อคำถาม</label>
+                            <div class="col-sm-9">
+                              <input type="text" class="form-control" autocomplete="off" name="field_questionnaire" placeholder="ข้อคำถาม..." required="required">
+                            </div>
+                          </div>
+                          <div class="form-group">
+                              <!-- Button -->
+                              <div class="col-md-offset-2 col-md-10">
+                                  <button type="Submit" class="btn btn-success">เพิ่ม</button>
+                                  <button type="Reset" class="btn btn-danger">ล้างข้อมูล</button>
+                              </div>
+                          </div>
+                        </form>
+                      </div><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+                    </div>
+                </div>
+
+            </div>
+          </div>
+        </div>
+
+    <script src="build/js/jquery.min.js"></script>
+    <script src="build/js/bootstrap.min.js"></script>
+    <script src="build/js/custom.min.js"></script>
+
+  </body>
+</html>
